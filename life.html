@@ -1,0 +1,163 @@
+<!doctype html>
+<html>
+  <head>
+    <title></title>
+    <style>
+    </style>
+
+  </head>
+  <body>
+    <div id="arrTest">
+      
+    </div>
+    <div class="mainDiv">
+	<canvas id="caGrid">
+	  
+	</canvas>
+  </div>
+    <div id="debug">
+<button value="Click Me!" onclick="javascript:calculateGrid();">Click Me!</button>
+    </div>
+  </body>
+<script language='javascript'>
+//Global variable definitions
+var width=50;
+var height=50;
+var cellSize=5;
+var gens=0;
+var arrGrid=[];
+var displayGrid=[];
+var canvasGrid = document.getElementById("caGrid");
+var ctx = canvasGrid.getContext("2d");
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Function declarations :
+
+	function debug(msg)
+	{
+	    document.getElementById("debug").innerHTML=document.getElementById("debug").innerHTML + "<br>" + msg;
+	}//function
+	
+	function getNeighbours(xCoord,yCoord)
+	{
+	    var neighbours=0;
+		var xChk=0;
+		var yChk=0;
+		//debug("Get neighbours for " + xCoord + "," + yCoord);
+		for (let x = (xCoord-1); x <= (xCoord + 1); x++)
+	    {
+		if(x < 0)
+		{
+		    xChk=width-1;
+		}//if
+		else
+		{
+		    xChk=(x % width);  
+		}//else
+		//debug("Checking xChck Value : " + xChk);
+		for (let y = yCoord-1; y <= yCoord+1; y++)
+	        {
+		    if(y < 0)
+		    {
+			yChk=height-1;
+		    }//if
+		    else
+		    {
+			yChk=y % height;
+		    }//else
+			if(arrGrid[xChk][yChk]>0)//cell is alive - add 1 to neighbours
+		    {
+			neighbours=neighbours+1;
+		    }//cell is alive
+		  }//for
+	    }//for
+
+		//Subtract one neighbour if the central cell is alive
+		if(arrGrid[xCoord][yCoord]>0)
+			{
+	    	neighbours=neighbours-1;
+		}//if
+		//debug(neighbours);
+		return neighbours;
+	}//function
+	
+	//Display existing calculated grid
+	function calculateGrid()
+	{
+		//debug("Start Calculation..");
+	    for (let x = 0; x < width; x++) {
+	      for (let y = 0; y < height; y++) 
+		  {
+		  //debug("Checking cell : " + x + "," + y);
+			if (arrGrid[x][y] > 0 && ((getNeighbours(x,y) == 2) || getNeighbours(x,y) == 3))
+		  {
+			//debug("Cell " + x + "," + y +" is still alive.");
+		      displayGrid[x][y]=1;
+		  }//if
+		  else if (arrGrid[x][y] < 0 && getNeighbours(x,y) == 3)
+		  {
+			//debug("Cell " + x + "," + y +" is now alive.");
+		      displayGrid[x][y]=1;
+		  }
+		  else
+		  {
+			displayGrid[x][y]=0;
+		  }  
+	      }//for
+	      }//for
+		  debug(arrGrid[x][y] + "," + displayGrid[x][y] + "<br>");
+		  display();
+		  arrGrid=displayGrid;
+	
+	}//function
+
+	function display()
+	{
+		//debug("Start Display..");
+	    var cellX=0;
+	    var cellY=0;
+	    for (let x = 0; x < width; x++) {
+	      for (let y = 0; y < height; y++) 
+		  {
+		  cellX = x * cellSize;
+		  cellY = y * cellSize;
+		  if (displayGrid[x][y] > 0)
+		  {
+		      //alert(arrGrid[x][y]);
+		      ctx.fillStyle = 'green';
+		      ctx.fillRect(cellX, cellY, cellSize, cellSize);
+		  }//if
+	      }//for
+	    }//for
+	}//function//
+///End function declarations///
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Initialise arrGrid
+
+for (let xval = 0; xval < width; xval++)
+{
+	
+	arrGrid[xval]=[];
+    displayGrid[xval]=[];
+    for (let yval = 0; yval < height; yval++)
+    {
+		var rand=Math.random();
+		arrGrid[xval][yval] = Math.round(rand);
+	}//for
+	
+}//for
+displayGrid=arrGrid;
+display();
+//Main body lpop
+// Calculates CA for gens no. of generations.
+
+for (let g=0;g<gens;g++)
+{
+//alert("Generation : " + g);
+		//calculateGrid();
+		//alert("first calc done");
+}//main for loops
+</script>
+      
+</html>
+
